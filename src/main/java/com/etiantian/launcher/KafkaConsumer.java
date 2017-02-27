@@ -1,55 +1,44 @@
 package com.etiantian.launcher;
 
-import com.etiantian.ConsumerCallback;
-import com.etiantian.PooledKafka;
 import com.etiantian.service.ServiceFacade;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.kafka.support.converter.KafkaMessageHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.PollableChannel;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Created by yuchunfan on 2017/2/4.
  */
 @Component
 public class KafkaConsumer {
+    private static Logger logger = Logger.getLogger(KafkaConsumer.class);
+
     @Autowired
     ServiceFacade serviceFacade;
 
+    @Autowired
+    PollableChannel channel;
     public void execute() throws IOException {
-        PooledKafka kafka = new PooledKafka();
-        kafka.setConfigLocation(new ClassPathResource("kafka.properties"));
-
-        Properties properties = new Properties();
-        properties.load(new ClassPathResource("config.properties").getInputStream());
-
-        try {
-            kafka.afterPropertiesSet();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        kafka.receive(new ConsumerCallback() {
-            public void afterReceive(ConsumerRecords consumerRecords) {
-                Iterator<ConsumerRecord> it = consumerRecords.iterator();
-                while(it.hasNext()) {
-                    ConsumerRecord record = it.next();
-                    System.out.println(record.topic()+ "    " + record.value());
-                    try {
-                        serviceFacade.doService(record.topic().toString(), new JSONObject(record.value().toString()));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+        while (true) {
+            Message<?> received = channel.receive(1000l);
+            if(received != null) {
+                KafkaMessageHeaders headers = (KafkaMessageHeaders) received.getHeaders();
+                Map<String, Object> map = headers.getRawHeaders();
+                String topic= map.get("kafka_receivedTopic").toString();
+                String value= received.getPayload().toString();
+                try {
+                    serviceFacade.doService(topic, new JSONObject(value));
+                } catch (JSONException e) {
+                    logger.error("Message format error!! "+ received+ "\n",e);
                 }
-
             }
-        },"kafka-readback", Arrays.asList(properties.getProperty("topic.list").split(",")),1000l );
+        }
     }
 }

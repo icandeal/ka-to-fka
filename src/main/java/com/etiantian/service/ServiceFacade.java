@@ -2,6 +2,7 @@ package com.etiantian.service;
 
 import com.etiantian.launcher.SpringContext;
 import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.Iterator;
  */
 @Service
 public class ServiceFacade {
+    private static Logger logger = Logger.getLogger(ServiceFacade.class);
     public static final char UNDERLINE = '_';
 
     public void doService(String topicName, JSONObject json) {
@@ -47,7 +49,7 @@ public class ServiceFacade {
                 callMethod(mapper, "insertSelective", entity);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("doService ERROR!!\n",e);
         }
     }
 
@@ -121,7 +123,7 @@ public class ServiceFacade {
         while(it.hasNext()) {
             String key = it.next();
             Object value = queryJson.get(key);
-            String methodName = "and" + toFirstUpperCase(key) + "EqualTo";
+            String methodName = "and" + toFirstUpperCase(underlineToCamel(key)) + "EqualTo";
             callMethod(criteria, methodName, value);
         }
 

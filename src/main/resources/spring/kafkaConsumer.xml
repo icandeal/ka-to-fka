@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/integration/kafka
+        http://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 消费配置 -->
+    <bean id="consumerProperties" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="bootstrap.servers" value="${bootstrap.servers}"/>
+                <entry key="group.id" value="${group.id}"/>
+                <entry key="enable.auto.commit" value="${enable.auto.commit}"/>
+                <entry key="auto.commit.interval.ms" value="${auto.commit.interval.ms}"/>
+                <entry key="session.timeout.ms" value="${session.timeout.ms}"/>
+                <entry key="key.deserializer" value="${key.deserializer}"/>
+                <entry key="value.deserializer" value="${value.deserializer}"/>
+            </map>
+        </constructor-arg>
+    </bean>
+
+    <!-- 创建consumerFactory bean -->
+    <bean id="consumerFactory" class="org.springframework.kafka.core.DefaultKafkaConsumerFactory">
+        <constructor-arg>
+            <ref bean="consumerProperties"/>
+        </constructor-arg>
+    </bean>
+
+
+    <!-- 消费1号 -->
+    <int:channel id="channel">
+        <int:queue/>
+    </int:channel>
+
+    <int-kafka:message-driven-channel-adapter auto-startup="true" channel="channel" listener-container="container" />
+
+    <bean id="container" class="org.springframework.kafka.listener.KafkaMessageListenerContainer">
+        <constructor-arg index="0" ref="consumerFactory"/>
+        <constructor-arg index="1" ref="containerProperties"/>
+    </bean>
+
+    <bean id="containerProperties" class="org.springframework.kafka.listener.config.ContainerProperties">
+        <constructor-arg>
+            <array>
+                <value>tol_newpaper_dir_association</value>
+                <value>tol_question_supplement_info</value>
+                <value>recommend_resource_weight</value>
+            </array>
+        </constructor-arg>
+    </bean>
+
+</beans>

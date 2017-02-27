@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.etiantian.dao.mappers.RecommendResourceWeightMapper">
+  <resultMap id="BaseResultMap" type="com.etiantian.entity.RecommendResourceWeight">
+    <id column="REF" jdbcType="DECIMAL" property="ref" />
+    <result column="RESOURCE_ID" jdbcType="DECIMAL" property="resourceId" />
+    <result column="CLASS_ID" jdbcType="DECIMAL" property="classId" />
+    <result column="WEIGHT" jdbcType="DECIMAL" property="weight" />
+    <result column="C_TIME" jdbcType="DATE" property="cTime" />
+    <result column="M_TIME" jdbcType="DATE" property="mTime" />
+    <result column="C_USER_ID" jdbcType="DECIMAL" property="cUserId" />
+    <result column="M_USER_ID" jdbcType="DECIMAL" property="mUserId" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    REF, RESOURCE_ID, CLASS_ID, WEIGHT, C_TIME, M_TIME, C_USER_ID, M_USER_ID
+  </sql>
+  <select id="selectByExample" parameterType="com.etiantian.entity.RecommendResourceWeightExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from RECOMMEND_RESOURCE_WEIGHT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.math.BigDecimal" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from RECOMMEND_RESOURCE_WEIGHT
+    where REF = #{ref,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal">
+    delete from RECOMMEND_RESOURCE_WEIGHT
+    where REF = #{ref,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.etiantian.entity.RecommendResourceWeightExample">
+    delete from RECOMMEND_RESOURCE_WEIGHT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.etiantian.entity.RecommendResourceWeight">
+    insert into RECOMMEND_RESOURCE_WEIGHT (REF, RESOURCE_ID, CLASS_ID, 
+      WEIGHT, C_TIME, M_TIME, C_USER_ID, 
+      M_USER_ID)
+    values (#{ref,jdbcType=DECIMAL}, #{resourceId,jdbcType=DECIMAL}, #{classId,jdbcType=DECIMAL}, 
+      #{weight,jdbcType=DECIMAL}, #{cTime,jdbcType=DATE}, #{mTime,jdbcType=DATE}, #{cUserId,jdbcType=DECIMAL}, 
+      #{mUserId,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.etiantian.entity.RecommendResourceWeight">
+    insert into RECOMMEND_RESOURCE_WEIGHT
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        REF,
+      <if test="resourceId != null">
+        RESOURCE_ID,
+      </if>
+      <if test="classId != null">
+        CLASS_ID,
+      </if>
+      <if test="weight != null">
+        WEIGHT,
+      </if>
+      <if test="cTime != null">
+        C_TIME,
+      </if>
+      <if test="mTime != null">
+        M_TIME,
+      </if>
+      <if test="cUserId != null">
+        C_USER_ID,
+      </if>
+      <if test="mUserId != null">
+        M_USER_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      seq_all_ref.nextval,
+      <if test="resourceId != null">
+        #{resourceId,jdbcType=DECIMAL},
+      </if>
+      <if test="classId != null">
+        #{classId,jdbcType=DECIMAL},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=DECIMAL},
+      </if>
+      <if test="cTime != null">
+        #{cTime,jdbcType=DATE},
+      </if>
+      <if test="mTime != null">
+        #{mTime,jdbcType=DATE},
+      </if>
+      <if test="cUserId != null">
+        #{cUserId,jdbcType=DECIMAL},
+      </if>
+      <if test="mUserId != null">
+        #{mUserId,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.etiantian.entity.RecommendResourceWeightExample" resultType="java.lang.Integer">
+    select count(*) from RECOMMEND_RESOURCE_WEIGHT
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update RECOMMEND_RESOURCE_WEIGHT
+    <set>
+      <if test="record.ref != null">
+        REF = #{record.ref,jdbcType=DECIMAL},
+      </if>
+      <if test="record.resourceId != null">
+        RESOURCE_ID = #{record.resourceId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.classId != null">
+        CLASS_ID = #{record.classId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.weight != null">
+        WEIGHT = #{record.weight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.cTime != null">
+        C_TIME = #{record.cTime,jdbcType=DATE},
+      </if>
+      <if test="record.mTime != null">
+        M_TIME = #{record.mTime,jdbcType=DATE},
+      </if>
+      <if test="record.cUserId != null">
+        C_USER_ID = #{record.cUserId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.mUserId != null">
+        M_USER_ID = #{record.mUserId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update RECOMMEND_RESOURCE_WEIGHT
+    set REF = #{record.ref,jdbcType=DECIMAL},
+      RESOURCE_ID = #{record.resourceId,jdbcType=DECIMAL},
+      CLASS_ID = #{record.classId,jdbcType=DECIMAL},
+      WEIGHT = #{record.weight,jdbcType=DECIMAL},
+      C_TIME = #{record.cTime,jdbcType=DATE},
+      M_TIME = #{record.mTime,jdbcType=DATE},
+      C_USER_ID = #{record.cUserId,jdbcType=DECIMAL},
+      M_USER_ID = #{record.mUserId,jdbcType=DECIMAL}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.etiantian.entity.RecommendResourceWeight">
+    update RECOMMEND_RESOURCE_WEIGHT
+    <set>
+      <if test="resourceId != null">
+        RESOURCE_ID = #{resourceId,jdbcType=DECIMAL},
+      </if>
+      <if test="classId != null">
+        CLASS_ID = #{classId,jdbcType=DECIMAL},
+      </if>
+      <if test="weight != null">
+        WEIGHT = #{weight,jdbcType=DECIMAL},
+      </if>
+      <if test="cTime != null">
+        C_TIME = #{cTime,jdbcType=DATE},
+      </if>
+      <if test="mTime != null">
+        M_TIME = #{mTime,jdbcType=DATE},
+      </if>
+      <if test="cUserId != null">
+        C_USER_ID = #{cUserId,jdbcType=DECIMAL},
+      </if>
+      <if test="mUserId != null">
+        M_USER_ID = #{mUserId,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where REF = #{ref,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.etiantian.entity.RecommendResourceWeight">
+    update RECOMMEND_RESOURCE_WEIGHT
+    set RESOURCE_ID = #{resourceId,jdbcType=DECIMAL},
+      CLASS_ID = #{classId,jdbcType=DECIMAL},
+      WEIGHT = #{weight,jdbcType=DECIMAL},
+      C_TIME = #{cTime,jdbcType=DATE},
+      M_TIME = #{mTime,jdbcType=DATE},
+      C_USER_ID = #{cUserId,jdbcType=DECIMAL},
+      M_USER_ID = #{mUserId,jdbcType=DECIMAL}
+    where REF = #{ref,jdbcType=DECIMAL}
+  </update>
+</mapper>
